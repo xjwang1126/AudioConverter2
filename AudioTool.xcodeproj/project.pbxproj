@@ -16,11 +16,6 @@
 		36A00007 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00023 /* VideoPlayerView.swift */; };
 		36A00008 /* AudioWaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00024 /* AudioWaveformView.swift */; };
 		36A00009 /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00025 /* AudioConverter.swift */; };
-		36A0000A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00031 /* HomeView.swift */; };
-		36A0000B /* AudioTrimView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00032 /* AudioTrimView.swift */; };
-		36A0000C /* AudioMergeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00033 /* AudioMergeView.swift */; };
-		36A0000D /* AudioEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00034 /* AudioEffectView.swift */; };
-
 		36A0000E /* AudioFilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00026 /* AudioFilePicker.swift */; };
 		36A0000F /* AudioConvertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00035 /* AudioConvertView.swift */; };
 /* End PBXBuildFile section */
@@ -36,14 +31,9 @@
 		36A00023 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		36A00024 /* AudioWaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioWaveformView.swift; sourceTree = "<group>"; };
 		36A00025 /* AudioConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverter.swift; sourceTree = "<group>"; };
-		36A00031 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		36A00032 /* AudioTrimView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTrimView.swift; sourceTree = "<group>"; };
-		36A00033 /* AudioMergeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMergeView.swift; sourceTree = "<group>"; };
-		36A00034 /* AudioEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEffectView.swift; sourceTree = "<group>"; };
-		36A00040 /* AudioTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
-
 		36A00026 /* AudioFilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFilePicker.swift; sourceTree = "<group>"; };
 		36A00035 /* AudioConvertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConvertView.swift; sourceTree = "<group>"; };
+		36A00040 /* AudioTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -93,10 +83,6 @@
 		36A00140 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				36A00031 /* HomeView.swift */,
-				36A00032 /* AudioTrimView.swift */,
-				36A00033 /* AudioMergeView.swift */,
-				36A00034 /* AudioEffectView.swift */,
 				36A00035 /* AudioConvertView.swift */,
 			);
 			path = Views;
@@ -174,10 +160,6 @@
 				36A00007 /* VideoPlayerView.swift in Sources */,
 				36A00008 /* AudioWaveformView.swift in Sources */,
 				36A00009 /* AudioConverter.swift in Sources */,
-				36A0000A /* HomeView.swift in Sources */,
-				36A0000B /* AudioTrimView.swift in Sources */,
-				36A0000C /* AudioMergeView.swift in Sources */,
-				36A0000D /* AudioEffectView.swift in Sources */,
 				36A0000E /* AudioFilePicker.swift in Sources */,
 				36A0000F /* AudioConvertView.swift in Sources */,
 			);
