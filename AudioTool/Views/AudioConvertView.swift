@@ -47,7 +47,7 @@ struct AudioConvertView: View {
             }
             .padding()
         }
-        .navigationTitle("格式转换")
+        .navigationTitle("极简音频格式转换器")
         .audioFileSelector(isPresented: $showFilePicker) { url in
             selectedFileURL = url
             showResult = false
