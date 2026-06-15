@@ -16,6 +16,15 @@ struct HomeView: View {
             }
             .tag(0)
             
+            // 格式转换
+            NavigationStack {
+                AudioConvertView()
+            }
+            .tabItem {
+                Label("转换", systemImage: "arrow.triangle.swap")
+            }
+            .tag(1)
+            
             // 音频剪辑
             NavigationStack {
                 AudioTrimView()
@@ -23,7 +32,7 @@ struct HomeView: View {
             .tabItem {
                 Label("剪辑", systemImage: "scissors")
             }
-            .tag(1)
+            .tag(2)
             
             // 音频合并
             NavigationStack {
@@ -32,7 +41,7 @@ struct HomeView: View {
             .tabItem {
                 Label("合并", systemImage: "plus.square.fill.on.square.fill")
             }
-            .tag(2)
+            .tag(3)
             
             // 音效
             NavigationStack {
@@ -41,7 +50,7 @@ struct HomeView: View {
             .tabItem {
                 Label("音效", systemImage: "waveform")
             }
-            .tag(3)
+            .tag(4)
         }
         .tint(.accentColor)
     }
