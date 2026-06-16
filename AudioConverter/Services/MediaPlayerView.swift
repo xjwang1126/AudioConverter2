@@ -17,7 +17,6 @@ struct MediaPlayerView: View {
                 emptyStateContent
             }
         }
-        .navigationTitle("媒体播放器")
         .fileSelector(isPresented: $showFilePicker) { url in
             playerManager.loadMedia(url: url)
         }
@@ -59,13 +58,6 @@ struct MediaPlayerView: View {
     private var mediaPlayerContent: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // 文件信息
-                if let url = playerManager.currentURL {
-                    AudioFileInfoView(url: url, showPlayButton: false)
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                }
-                
                 // 视频播放器（SwiftUI 内置）- 仅视频文件显示
                 if playerManager.isVideo {
                     VStack(spacing: 8) {
@@ -98,104 +90,8 @@ struct MediaPlayerView: View {
                         }
                     }
                 }
-                
-                // 音频播放控制
-                audioControlSection
-                
-                // 格式转换入口
-                if let url = playerManager.currentURL {
-                    NavigationLink(destination: AudioConvertView(initialFileURL: url)) {
-                        HStack {
-                            Image(systemName: "arrow.triangle.swap")
-                            Text("格式转换")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.orange.opacity(0.1))
-                        .foregroundColor(.orange)
-                        .cornerRadius(12)
-                    }
-                    .padding(.horizontal)
-                }
             }
             .padding(.vertical)
-        }
-    }
-    
-    // MARK: - 音频控制
-    private var audioControlSection: some View {
-        VStack(spacing: 12) {
-            // 播放进度
-            VStack(spacing: 4) {
-                Slider(value: $playerManager.playbackProgress, in: 0...1) { editing in
-                    if !editing {
-                        playerManager.seek(to: playerManager.playbackProgress)
-                    }
-                }
-                .tint(.accentColor)
-                
-                HStack {
-                    Text(formatTime(playerManager.currentTime))
-                        .font(.caption.monospacedDigit())
-                    Spacer()
-                    Text(formatTime(playerManager.duration))
-                        .font(.caption.monospacedDigit())
-                }
-                .foregroundColor(.secondary)
-            }
-            .padding(.horizontal)
-            
-            // 控制按钮
-            HStack(spacing: 40) {
-                Button(action: { playerManager.skip(by: -10) }) {
-                    Image(systemName: "gobackward.10")
-                        .font(.title2)
-                }
-                
-                Button(action: { playerManager.togglePlayPause() }) {
-                    Image(systemName: playerManager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 56))
-                        .foregroundColor(.accentColor)
-                }
-                
-                Button(action: { playerManager.skip(by: 10) }) {
-                    Image(systemName: "goforward.10")
-                        .font(.title2)
-                }
-            }
-            
-            // 音量控制
-            HStack {
-                Image(systemName: "speaker.fill")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Slider(value: $playerManager.volume, in: 0...1)
-                    .tint(.accentColor)
-                Image(systemName: "speaker.wave.3.fill")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            .padding(.horizontal)
-            
-            // 播放模式
-            HStack(spacing: 20) {
-                Button(action: { playerManager.toggleRepeat() }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: playerManager.isRepeatOn ? "repeat.circle.fill" : "repeat.circle")
-                        Text("单曲循环")
-                    }
-                    .font(.caption)
-                    .foregroundColor(playerManager.isRepeatOn ? .accentColor : .secondary)
-                }
-                
-                Spacer()
-                
-                Button(action: { showFilePicker = true }) {
-                    Label("打开文件", systemImage: "doc.badge.plus")
-                        .font(.caption)
-                }
-            }
-            .padding(.horizontal)
         }
     }
     
