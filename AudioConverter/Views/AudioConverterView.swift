@@ -47,7 +47,7 @@ struct AudioConvertView: View {
             }
             .padding()
         }
-        .navigationTitle("极简音频格式转换器")
+        .navigationTitle("极简音频转换器")
         .fileSelector(isPresented: $showFilePicker) { url in
             selectedFileURL = url
             showResult = false
@@ -104,10 +104,6 @@ struct AudioConvertView: View {
                             .foregroundColor(.accentColor)
                         Text("选择文件")
                             .font(.headline)
-                        Text("支持 MP4、MOV、MP3、M4A、WAV、AAC、CAF、FLAC 等格式")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 40)
