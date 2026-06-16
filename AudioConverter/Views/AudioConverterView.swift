@@ -1,5 +1,5 @@
 import SwiftUI
-import AVFoundation
+import AVKit
 
 struct AudioConvertView: View {
     let initialFileURL: URL?
@@ -150,25 +150,40 @@ struct AudioConvertView: View {
                 }
             } else {
                 VStack(spacing: 16) {
-                    // 未选择文件
-                    Button(action: { showFilePicker = true }) {
-                        VStack(spacing: 12) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 40))
-                                .foregroundColor(.accentColor)
-                            Text("选择文件")
-                                .font(.headline)
+                    // 未选择文件 - 显示 AVPlayer 背景（带选择提示）
+                    ZStack(alignment: .center) {
+                        // AVKit 视频播放器作为背景
+                        VideoPlayer(player: nil)
+                            .frame(height: 220)
+                            .cornerRadius(16)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                            )
+                        
+                        // 半透明遮罩 + 选择提示
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.black.opacity(0.3))
+                            .frame(height: 220)
+                        
+                        // 点击选择区域
+                        Button(action: { showFilePicker = true }) {
+                            VStack(spacing: 10) {
+                                Image(systemName: "play.circle.fill")
+                                    .font(.system(size: 44))
+                                    .foregroundColor(.white)
+                                Text("点击选择文件")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                Text("支持音频和视频格式")
+                                    .font(.caption)
+                                    .foregroundColor(.white.opacity(0.8))
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 220)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 40)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(16)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color.accentColor.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
-                        )
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                     
                     // 两个操作按钮横排
                     HStack(spacing: 12) {
