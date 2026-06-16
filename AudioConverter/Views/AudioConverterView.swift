@@ -50,6 +50,7 @@ struct AudioConvertView: View {
             }
             .padding()
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("极简音频转换器")
         .navigationBarTitleDisplayMode(.inline)
         .fileSelector(isPresented: $showFilePicker) { url in
@@ -134,6 +135,8 @@ struct AudioConvertView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 10)
                     
                     // 开始转换
                     Button(action: startConversion) {
@@ -151,7 +154,11 @@ struct AudioConvertView: View {
                     }
                     .disabled(converter.isConverting)
                     .opacity(converter.isConverting ? 0.6 : 1)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 10)
                 }
+                .background(Color.white)
+                .cornerRadius(12)
             }
         }
     }
@@ -160,7 +167,9 @@ struct AudioConvertView: View {
     private var formatSelectionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("转换格式", systemImage: "arrow.triangle.swap")
-                .font(.headline)
+                .font(.callout)
+                .padding(.horizontal,10)
+                .padding(.top, 10)
             
             LazyVGrid(columns: [
                 GridItem(.flexible()),
@@ -177,7 +186,11 @@ struct AudioConvertView: View {
                     }
                 }
             }
+            .padding(.horizontal, 10)
+            .padding(.bottom, 10)
         }
+        .background(Color.white)
+        .cornerRadius(12)
     }
     
     // MARK: - 转换按钮
@@ -368,7 +381,7 @@ struct FormatCard: View {
         Button(action: onTap) {
             VStack(spacing: 8) {
                 Text(format.displayName)
-                    .font(.caption)
+                    .font(.body)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
             }
