@@ -4,7 +4,7 @@ import PhotosUI
 import AVFoundation
 
 // MARK: - 从文件App选择音频
-struct AudioDocumentPicker: UIViewControllerRepresentable {
+struct FileDocumentPicker: UIViewControllerRepresentable {
     var onPick: (URL) -> Void
     var onDismiss: (() -> Void)?
     
@@ -53,7 +53,7 @@ struct AudioDocumentPicker: UIViewControllerRepresentable {
 }
 
 // MARK: - 从相册选择视频（提取音频）
-struct AudioPhotoPicker: UIViewControllerRepresentable {
+struct FilePhotoPicker: UIViewControllerRepresentable {
     var onPick: (URL) -> Void
     var onDismiss: (() -> Void)?
     
@@ -173,7 +173,7 @@ struct AudioPhotoPicker: UIViewControllerRepresentable {
 }
 
 // MARK: - 统一文件选择器
-struct AudioFileSelectorModifier: ViewModifier {
+struct FileSelectorModifier: ViewModifier {
     @Binding var isPresented: Bool
     var onPickFile: (URL) -> Void
     
@@ -182,7 +182,7 @@ struct AudioFileSelectorModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .confirmationDialog("选择音频来源", isPresented: $isPresented, titleVisibility: .visible) {
+            .confirmationDialog("选择文件来源", isPresented: $isPresented, titleVisibility: .visible) {
                 Button("从文件选择") {
                     showDocumentPicker = true
                 }
@@ -192,7 +192,7 @@ struct AudioFileSelectorModifier: ViewModifier {
                 Button("取消", role: .cancel) { }
             }
             .sheet(isPresented: $showDocumentPicker) {
-                AudioDocumentPicker(onPick: { url in
+                FileDocumentPicker(onPick: { url in
                     onPickFile(url)
                     showDocumentPicker = false
                 }, onDismiss: {
@@ -200,7 +200,7 @@ struct AudioFileSelectorModifier: ViewModifier {
                 })
             }
             .sheet(isPresented: $showPhotoPicker) {
-                AudioPhotoPicker(onPick: { url in
+                FilePhotoPicker(onPick: { url in
                     onPickFile(url)
                     showPhotoPicker = false
                 }, onDismiss: {
@@ -211,8 +211,8 @@ struct AudioFileSelectorModifier: ViewModifier {
 }
 
 extension View {
-    func audioFileSelector(isPresented: Binding<Bool>, onPickFile: @escaping (URL) -> Void) -> some View {
-        modifier(AudioFileSelectorModifier(isPresented: isPresented, onPickFile: onPickFile))
+    func fileSelector(isPresented: Binding<Bool>, onPickFile: @escaping (URL) -> Void) -> some View {
+        modifier(FileSelectorModifier(isPresented: isPresented, onPickFile: onPickFile))
     }
 }
 
