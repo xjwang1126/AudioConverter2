@@ -10,6 +10,7 @@ struct FileDocumentPicker: UIViewControllerRepresentable {
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
         let supportedTypes: [UTType] = [
+            // 音频格式
             .audio,
             .mp3,
             .wav,
@@ -19,6 +20,14 @@ struct FileDocumentPicker: UIViewControllerRepresentable {
             UTType(filenameExtension: "caf") ?? .audio,
             UTType(filenameExtension: "aac") ?? .audio,
             UTType(filenameExtension: "flac") ?? .audio,
+            // 视频格式
+            .movie,
+            .mpeg,
+            .mpeg2Video,
+            .mpeg4Movie,
+            .quickTimeMovie,
+            UTType(filenameExtension: "avi") ?? .movie,
+            UTType(filenameExtension: "mkv") ?? .movie,
         ]
         let picker = UIDocumentPickerViewController(forOpeningContentTypes: supportedTypes, asCopy: true)
         picker.delegate = context.coordinator
@@ -90,7 +99,7 @@ struct FilePhotoPicker: UIViewControllerRepresentable {
                 return
             }
             
-            // 加载视频文件
+            // 加载视频文件（保留原视频，不提取音频）
             let videoType = UTType.movie.identifier
             result.itemProvider.loadFileRepresentation(forTypeIdentifier: videoType) { url, error in
                 if let url = url {
@@ -98,16 +107,9 @@ struct FilePhotoPicker: UIViewControllerRepresentable {
                     let destURL = tempDir.appendingPathComponent(url.lastPathComponent)
                     try? FileManager.default.copyItem(at: url, to: destURL)
                     
-                    // 从视频中提取音频
-                    self.extractAudio(from: destURL) { audioURL in
-                        DispatchQueue.main.async {
-                            if let audioURL = audioURL {
-                                self.onPick(audioURL)
-                            } else {
-                                self.onPick(destURL)
-                            }
-                            picker.dismiss(animated: true)
-                        }
+                    DispatchQueue.main.async {
+                        self.onPick(destURL)
+                        picker.dismiss(animated: true)
                     }
                 } else {
                     // 备选方案
@@ -122,50 +124,10 @@ struct FilePhotoPicker: UIViewControllerRepresentable {
                             let destURL = tempDir.appendingPathComponent(url.lastPathComponent)
                             try? FileManager.default.copyItem(at: url, to: destURL)
                             
-                            self.extractAudio(from: destURL) { audioURL in
-                                if let audioURL = audioURL {
-                                    self.onPick(audioURL)
-                                } else {
-                                    self.onPick(destURL)
-                                }
-                                picker.dismiss(animated: true)
-                            }
+                            self.onPick(destURL)
+                            picker.dismiss(animated: true)
                         }
                     }
-                }
-            }
-        }
-        
-        private func extractAudio(from videoURL: URL, completion: @escaping (URL?) -> Void) {
-            let asset = AVAsset(url: videoURL)
-            
-            guard asset.tracks(withMediaType: .audio).first != nil else {
-                completion(nil)
-                return
-            }
-            
-            guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else {
-                completion(nil)
-                return
-            }
-            
-            let outputURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("extracted_audio_\(UUID().uuidString).m4a")
-            
-            exportSession.outputURL = outputURL
-            exportSession.outputFileType = .m4a
-            exportSession.shouldOptimizeForNetworkUse = true
-            exportSession.timeRange = CMTimeRange(start: .zero, duration: asset.duration)
-            
-            exportSession.exportAsynchronously {
-                switch exportSession.status {
-                case .completed:
-                    completion(outputURL)
-                case .failed, .cancelled:
-                    print("音频提取失败: \(exportSession.error?.localizedDescription ?? "未知错误")")
-                    completion(nil)
-                default:
-                    completion(nil)
                 }
             }
         }
