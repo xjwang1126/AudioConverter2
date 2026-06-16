@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct AudioToolApp: App {
+struct AudioConverterApp: App {
     @StateObject private var audioPlayer = AudioPlayer()
     
     var body: some Scene {
