@@ -6,21 +6,17 @@ class AudioConverterService: ObservableObject {
     // 支持的转换格式
     enum ConversionFormat: String, CaseIterable, Identifiable {
         case m4a = "m4a"
-        case wav = "wav"
         case mp3 = "mp3"
         case aac = "aac"
-        case caf = "caf"
         case flac = "flac"
         
         var id: String { rawValue }
         
         var displayName: String {
             switch self {
-            case .m4a: return "M4A (AAC)"
-            case .wav: return "WAV (无损)"
+            case .m4a: return "M4A"
             case .mp3: return "MP3"
             case .aac: return "AAC"
-            case .caf: return "CAF"
             case .flac: return "FLAC"
             }
         }
@@ -28,10 +24,8 @@ class AudioConverterService: ObservableObject {
         var icon: String {
             switch self {
             case .m4a: return "waveform"
-            case .wav: return "waveform.path"
             case .mp3: return "music.note"
             case .aac: return "speaker.wave.2"
-            case .caf: return "square.stack"
             case .flac: return "opticaldisc"
             }
         }
@@ -39,10 +33,8 @@ class AudioConverterService: ObservableObject {
         var utType: UTType {
             switch self {
             case .m4a: return .mpeg4Audio
-            case .wav: return .wav
             case .mp3: return .mp3
             case .aac: return .appleProtectedMPEG4Audio
-            case .caf: return UTType(filenameExtension: "caf") ?? .audio
             case .flac: return UTType(filenameExtension: "flac") ?? .audio
             }
         }
@@ -50,20 +42,16 @@ class AudioConverterService: ObservableObject {
         var avFileType: AVFileType {
             switch self {
             case .m4a: return .m4a
-            case .wav: return .wav
             case .mp3: return .mp3  // macOS可能不支持直接导出mp3
             case .aac: return .m4a
-            case .caf: return .caf
-            case .flac: return .caf  // 使用caf作为flac的替代
+            case .flac: return .caf
             }
         }
         
         var presetName: String {
             switch self {
             case .m4a, .aac: return AVAssetExportPresetAppleM4A
-            case .wav: return AVAssetExportPresetAppleM4A  // WAV用WAVE格式导出
             case .mp3: return AVAssetExportPresetAppleM4A  // MP3用M4A替代
-            case .caf: return AVAssetExportPresetAppleM4A
             case .flac: return AVAssetExportPresetAppleM4A
             }
         }
@@ -71,8 +59,8 @@ class AudioConverterService: ObservableObject {
         // 是否可以直接用 AVAssetExportSession 导出
         var supportsDirectExport: Bool {
             switch self {
-            case .m4a, .aac, .caf: return true
-            case .wav, .mp3, .flac: return false  // 需要通过 AVAssetReader/Writer 转换
+            case .m4a, .aac: return true
+            case .mp3, .flac: return false  // 需要通过 AVAssetReader/Writer 转换
             }
         }
     }
@@ -138,7 +126,7 @@ class AudioConverterService: ObservableObject {
         }
     }
     
-    // 方式2: 使用 AVAssetReader + AVAssetWriter（支持 WAV/MP3/FLAC）
+    // 方式2: 使用 AVAssetReader + AVAssetWriter（支持 MP3/FLAC）
     private func convertWithAssetReader(asset: AVAsset, sourceURL: URL, format: ConversionFormat) {
         do {
             guard let audioTrack = asset.tracks(withMediaType: .audio).first else {
@@ -169,15 +157,6 @@ class AudioConverterService: ObservableObject {
             // 配置 Writer 的输出格式
             let audioSettings: [String: Any]
             switch format {
-            case .wav:
-                audioSettings = [
-                    AVFormatIDKey: kAudioFormatLinearPCM,
-                    AVLinearPCMBitDepthKey: 16,
-                    AVLinearPCMIsFloatKey: false,
-                    AVLinearPCMIsBigEndianKey: false,
-                    AVNumberOfChannelsKey: 2,
-                    AVSampleRateKey: 44100
-                ]
             case .mp3:
                 // iOS 原生不支持编码 MP3，使用 AAC 作为替代
                 audioSettings = [

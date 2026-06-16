@@ -70,10 +70,8 @@ struct ProfileView: View {
 struct FormatGuideView: View {
     let formats: [(name: String, desc: String, icon: String)] = [
         ("M4A (AAC)", "高级音频编码格式，兼容性好，iOS 原生支持", "waveform"),
-        ("WAV", "无损 PCM 格式，音质最佳，文件体积较大", "waveform.path"),
         ("MP3", "最主流的音频格式，兼容性极广", "music.note"),
         ("AAC", "Advanced Audio Coding，比 MP3 压缩效率更高", "speaker.wave.2"),
-        ("CAF", "Core Audio Format，Apple 的容器格式", "square.stack"),
         ("FLAC", "Free Lossless Audio Codec，开源无损格式", "opticaldisc"),
     ]
     

@@ -13,11 +13,9 @@ struct FileDocumentPicker: UIViewControllerRepresentable {
             // 音频格式
             .audio,
             .mp3,
-            .wav,
             .mpeg4Audio,
             .appleProtectedMPEG4Audio,
             UTType(filenameExtension: "m4a") ?? .audio,
-            UTType(filenameExtension: "caf") ?? .audio,
             UTType(filenameExtension: "aac") ?? .audio,
             UTType(filenameExtension: "flac") ?? .audio,
             // 视频格式

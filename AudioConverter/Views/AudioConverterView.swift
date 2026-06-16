@@ -77,153 +77,80 @@ struct AudioConvertView: View {
     // MARK: - 文件选择区域
     private var fileSelectionSection: some View {
         VStack(spacing: 12) {
-            if let url = selectedFileURL {
-                // 已选文件
-                VStack(spacing: 16) {
-                    AudioFileInfoView(url: url, showPlayButton: true, onPlay: {
-                        audioPlayer.play(url: url)
-                    }, onRemove: {
-                        selectedFileURL = nil
-                        showResult = false
-                        converter.convertedURL = nil
-                        audioPlayer.stop()
-                    })
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+            VStack(spacing: 16) {
+                // 未选择文件 - 显示 AVPlayer 背景（带选择提示）
+                ZStack(alignment: .center) {
+                    // AVKit 视频播放器作为背景
+                    VideoPlayer(player: nil)
+                        .frame(height: 220)
+                        .cornerRadius(16)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                        )
                     
-                    // 源文件格式标签
-                    HStack {
-                        Text("源格式")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        Text(url.pathExtension.uppercased())
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.accentColor)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(Color.accentColor.opacity(0.1))
-                            .cornerRadius(4)
-                        Spacer()
-                    }
+                    // 半透明遮罩 + 选择提示
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.black.opacity(0.3))
+                        .frame(height: 220)
                     
-                    // 两个操作按钮横排
-                    HStack(spacing: 12) {
-                        // 选择其他文件
-                        Button(action: { showFilePicker = true }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "doc.badge.plus")
-                                Text("选择文件")
-                            }
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.accentColor.opacity(0.1))
-                            .foregroundColor(.accentColor)
-                            .cornerRadius(10)
+                    // 点击选择区域
+                    Button(action: { showFilePicker = true }) {
+                        VStack(spacing: 10) {
+                            Image(systemName: "play.circle.fill")
+                                .font(.system(size: 44))
+                                .foregroundColor(.white)
+                            Text("点击选择文件")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                            Text("支持音频和视频格式")
+                                .font(.caption)
+                                .foregroundColor(.white.opacity(0.8))
                         }
-                        
-                        // 开始转换
-                        Button(action: startConversion) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "arrow.triangle.swap")
-                                Text("转换音频")
-                            }
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(
-                                LinearGradient(
-                                    colors: [.accentColor, .accentColor.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                        }
-                        .disabled(converter.isConverting)
-                        .opacity(converter.isConverting ? 0.6 : 1)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 220)
                     }
+                    .buttonStyle(.plain)
                 }
-            } else {
-                VStack(spacing: 16) {
-                    // 未选择文件 - 显示 AVPlayer 背景（带选择提示）
-                    ZStack(alignment: .center) {
-                        // AVKit 视频播放器作为背景
-                        VideoPlayer(player: nil)
-                            .frame(height: 220)
-                            .cornerRadius(16)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
-                            )
-                        
-                        // 半透明遮罩 + 选择提示
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.black.opacity(0.3))
-                            .frame(height: 220)
-                        
-                        // 点击选择区域
-                        Button(action: { showFilePicker = true }) {
-                            VStack(spacing: 10) {
-                                Image(systemName: "play.circle.fill")
-                                    .font(.system(size: 44))
-                                    .foregroundColor(.white)
-                                Text("点击选择文件")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                Text("支持音频和视频格式")
-                                    .font(.caption)
-                                    .foregroundColor(.white.opacity(0.8))
-                            }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 220)
+                
+                // 两个操作按钮横排
+                HStack(spacing: 12) {
+                    // 选择其他文件
+                    Button(action: { showFilePicker = true }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "doc.badge.plus")
+                            Text("选择文件")
                         }
-                        .buttonStyle(.plain)
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            LinearGradient(
+                                colors: [.accentColor, .accentColor.opacity(0.8)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
                     
-                    // 两个操作按钮横排
-                    HStack(spacing: 12) {
-                        // 选择其他文件
-                        Button(action: { showFilePicker = true }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "doc.badge.plus")
-                                Text("选择文件")
-                            }
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(
-                                LinearGradient(
-                                    colors: [.accentColor, .accentColor.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                    // 开始转换
+                    Button(action: startConversion) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "arrow.triangle.swap")
+                            Text("转换音频")
                         }
-                        
-                        // 开始转换
-                        Button(action: startConversion) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "arrow.triangle.swap")
-                                Text("转换音频")
-                            }
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.accentColor.opacity(0.1))
-                            .foregroundColor(.accentColor)
-                            .cornerRadius(10)
-                        }
-                        .disabled(converter.isConverting)
-                        .opacity(converter.isConverting ? 0.6 : 1)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.accentColor.opacity(0.1))
+                        .foregroundColor(.accentColor)
+                        .cornerRadius(10)
                     }
+                    .disabled(converter.isConverting)
+                    .opacity(converter.isConverting ? 0.6 : 1)
                 }
             }
         }
@@ -232,10 +159,11 @@ struct AudioConvertView: View {
     // MARK: - 格式选择区域
     private var formatSelectionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("选择目标格式", systemImage: "arrow.triangle.swap")
+            Label("转换格式", systemImage: "arrow.triangle.swap")
                 .font(.headline)
             
             LazyVGrid(columns: [
+                GridItem(.flexible()),
                 GridItem(.flexible()),
                 GridItem(.flexible()),
                 GridItem(.flexible())
@@ -243,8 +171,7 @@ struct AudioConvertView: View {
                 ForEach(availableFormats) { format in
                     FormatCard(
                         format: format,
-                        isSelected: selectedFormat == format,
-                        isOriginal: format.rawValue == selectedFileURL?.pathExtension.lowercased()
+                        isSelected: selectedFormat == format
                     ) {
                         selectedFormat = format
                     }
@@ -435,29 +362,15 @@ struct AudioConvertView: View {
 struct FormatCard: View {
     let format: AudioConverterService.ConversionFormat
     let isSelected: Bool
-    let isOriginal: Bool
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
             VStack(spacing: 8) {
-                Image(systemName: format.icon)
-                    .font(.title3)
-                
                 Text(format.displayName)
                     .font(.caption)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
-                
-                if isOriginal {
-                    Text("原格式")
-                        .font(.system(size: 8))
-                        .fontWeight(.bold)
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 1)
-                        .background(Color.secondary.opacity(0.2))
-                        .cornerRadius(3)
-                }
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
