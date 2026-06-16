@@ -1,6 +1,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import PhotosUI
+import AVFoundation
 
 // MARK: - 从文件App选择音频
 struct AudioDocumentPicker: UIViewControllerRepresentable {
@@ -51,14 +52,14 @@ struct AudioDocumentPicker: UIViewControllerRepresentable {
     }
 }
 
-// MARK: - 从相册选择音频（PHAsset方式，实际iOS相册不支持直接选音频文件，改用PHPicker）
+// MARK: - 从相册选择视频（提取音频）
 struct AudioPhotoPicker: UIViewControllerRepresentable {
     var onPick: (URL) -> Void
     var onDismiss: (() -> Void)?
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var config = PHPickerConfiguration()
-        config.filter = .videos  // iOS相册不支持直接选音频，退而选视频
+        config.filter = .videos
         config.selectionLimit = 1
         config.preferredAssetRepresentationMode = .current
         
@@ -89,23 +90,89 @@ struct AudioPhotoPicker: UIViewControllerRepresentable {
                 return
             }
             
-            result.itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.audio.identifier) { url, error in
-                DispatchQueue.main.async {
-                    if let url = url {
-                        // 复制到临时目录
-                        let tempDir = FileManager.default.temporaryDirectory
-                        let destURL = tempDir.appendingPathComponent(url.lastPathComponent)
-                        try? FileManager.default.copyItem(at: url, to: destURL)
-                        self.onPick(destURL)
+            // 加载视频文件
+            let videoType = UTType.movie.identifier
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: videoType) { url, error in
+                if let url = url {
+                    let tempDir = FileManager.default.temporaryDirectory
+                    let destURL = tempDir.appendingPathComponent(url.lastPathComponent)
+                    try? FileManager.default.copyItem(at: url, to: destURL)
+                    
+                    // 从视频中提取音频
+                    self.extractAudio(from: destURL) { audioURL in
+                        DispatchQueue.main.async {
+                            if let audioURL = audioURL {
+                                self.onPick(audioURL)
+                            } else {
+                                self.onPick(destURL)
+                            }
+                            picker.dismiss(animated: true)
+                        }
                     }
-                    picker.dismiss(animated: true)
+                } else {
+                    // 备选方案
+                    result.itemProvider.loadItem(forTypeIdentifier: videoType, options: nil) { item, error in
+                        DispatchQueue.main.async {
+                            guard let url = item as? URL else {
+                                self.onDismiss?()
+                                picker.dismiss(animated: true)
+                                return
+                            }
+                            let tempDir = FileManager.default.temporaryDirectory
+                            let destURL = tempDir.appendingPathComponent(url.lastPathComponent)
+                            try? FileManager.default.copyItem(at: url, to: destURL)
+                            
+                            self.extractAudio(from: destURL) { audioURL in
+                                if let audioURL = audioURL {
+                                    self.onPick(audioURL)
+                                } else {
+                                    self.onPick(destURL)
+                                }
+                                picker.dismiss(animated: true)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        private func extractAudio(from videoURL: URL, completion: @escaping (URL?) -> Void) {
+            let asset = AVAsset(url: videoURL)
+            
+            guard asset.tracks(withMediaType: .audio).first != nil else {
+                completion(nil)
+                return
+            }
+            
+            guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else {
+                completion(nil)
+                return
+            }
+            
+            let outputURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("extracted_audio_\(UUID().uuidString).m4a")
+            
+            exportSession.outputURL = outputURL
+            exportSession.outputFileType = .m4a
+            exportSession.shouldOptimizeForNetworkUse = true
+            exportSession.timeRange = CMTimeRange(start: .zero, duration: asset.duration)
+            
+            exportSession.exportAsynchronously {
+                switch exportSession.status {
+                case .completed:
+                    completion(outputURL)
+                case .failed, .cancelled:
+                    print("音频提取失败: \(exportSession.error?.localizedDescription ?? "未知错误")")
+                    completion(nil)
+                default:
+                    completion(nil)
                 }
             }
         }
     }
 }
 
-// MARK: - 统一文件选择器（底部Sheet）
+// MARK: - 统一文件选择器
 struct AudioFileSelectorModifier: ViewModifier {
     @Binding var isPresented: Bool
     var onPickFile: (URL) -> Void
@@ -116,7 +183,7 @@ struct AudioFileSelectorModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .confirmationDialog("选择音频来源", isPresented: $isPresented, titleVisibility: .visible) {
-                Button("从文件App选择") {
+                Button("从文件选择") {
                     showDocumentPicker = true
                 }
                 Button("从相册选择") {
@@ -161,18 +228,15 @@ struct AudioFileInfoView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // 文件图标
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.accentColor.opacity(0.15))
                     .frame(width: 44, height: 44)
-                
                 Image(systemName: "music.note")
                     .font(.title3)
                     .foregroundColor(.accentColor)
             }
             
-            // 文件信息
             VStack(alignment: .leading, spacing: 2) {
                 Text(url.lastPathComponent)
                     .font(.subheadline)
@@ -203,7 +267,6 @@ struct AudioFileInfoView: View {
             
             Spacer()
             
-            // 操作按钮
             HStack(spacing: 4) {
                 if showPlayButton {
                     Button(action: { onPlay?() }) {
@@ -213,7 +276,6 @@ struct AudioFileInfoView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                
                 if let onRemove = onRemove {
                     Button(action: onRemove) {
                         Image(systemName: "xmark.circle.fill")
@@ -225,21 +287,15 @@ struct AudioFileInfoView: View {
             }
         }
         .padding(.vertical, 4)
-        .onAppear {
-            loadFileInfo()
-        }
+        .onAppear { loadFileInfo() }
     }
     
     private func loadFileInfo() {
-        // 文件大小
         if let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
            let size = attrs[.size] as? Int64 {
-            let formatter = ByteCountFormatter()
-            formatter.countStyle = .file
-            fileSize = formatter.string(fromByteCount: size)
+            fileSize = ByteCountFormatter().string(fromByteCount: size)
         }
         
-        // 时长
         let asset = AVAsset(url: url)
         let durationSeconds = CMTimeGetSeconds(asset.duration)
         if durationSeconds.isFinite && durationSeconds > 0 {
@@ -248,9 +304,4 @@ struct AudioFileInfoView: View {
             duration = String(format: "%02d:%02d", m, s)
         }
     }
-}
-
-#Preview("AudioFileInfoView") {
-    AudioFileInfoView(url: URL(fileURLWithPath: "/tmp/test.m4a"))
-        .padding()
 }
