@@ -29,9 +29,6 @@ struct AudioConvertView: View {
                     // 格式选择
                     formatSelectionSection
                     
-                    // 转换按钮
-                    convertButtonSection
-                    
                     // 转换进度
                     if converter.isConverting {
                         progressSection
@@ -64,14 +61,14 @@ struct AudioConvertView: View {
             audioPlayer.play(url: url)
         }
         .onAppear {
-                if let url = initialFileURL {
-                    selectedFileURL = url
-                    showResult = false
-                    converter.convertedURL = nil
-                    converter.errorMessage = nil
-                    audioPlayer.play(url: url)
-                }
+            if let url = initialFileURL {
+                selectedFileURL = url
+                showResult = false
+                converter.convertedURL = nil
+                converter.errorMessage = nil
+                audioPlayer.play(url: url)
             }
+        }
         .onDisappear {
             audioPlayer.stop()
         }
@@ -110,27 +107,109 @@ struct AudioConvertView: View {
                             .cornerRadius(4)
                         Spacer()
                     }
+                    
+                    // 两个操作按钮横排
+                    HStack(spacing: 12) {
+                        // 选择其他文件
+                        Button(action: { showFilePicker = true }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "doc.badge.plus")
+                                Text("选择文件")
+                            }
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Color.accentColor.opacity(0.1))
+                            .foregroundColor(.accentColor)
+                            .cornerRadius(10)
+                        }
+                        
+                        // 开始转换
+                        Button(action: startConversion) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.triangle.swap")
+                                Text("转换音频")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(
+                                LinearGradient(
+                                    colors: [.accentColor, .accentColor.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
+                        .disabled(converter.isConverting)
+                        .opacity(converter.isConverting ? 0.6 : 1)
+                    }
                 }
             } else {
-                // 未选择文件
-                Button(action: { showFilePicker = true }) {
-                    VStack(spacing: 12) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 40))
-                            .foregroundColor(.accentColor)
-                        Text("选择文件")
-                            .font(.headline)
+                VStack(spacing: 16) {
+                    // 未选择文件
+                    Button(action: { showFilePicker = true }) {
+                        VStack(spacing: 12) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 40))
+                                .foregroundColor(.accentColor)
+                            Text("选择文件")
+                                .font(.headline)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(16)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.accentColor.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
+                        )
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(16)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.accentColor.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
-                    )
+                    .buttonStyle(.plain)
+                    
+                    // 两个操作按钮横排
+                    HStack(spacing: 12) {
+                        // 选择其他文件
+                        Button(action: { showFilePicker = true }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "doc.badge.plus")
+                                Text("选择文件")
+                            }
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(
+                                LinearGradient(
+                                    colors: [.accentColor, .accentColor.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
+                        
+                        // 开始转换
+                        Button(action: startConversion) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.triangle.swap")
+                                Text("转换音频")
+                            }
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Color.accentColor.opacity(0.1))
+                            .foregroundColor(.accentColor)
+                            .cornerRadius(10)
+                        }
+                        .disabled(converter.isConverting)
+                        .opacity(converter.isConverting ? 0.6 : 1)
+                    }
                 }
-                .buttonStyle(.plain)
             }
         }
     }
