@@ -48,6 +48,7 @@ struct AudioConvertView: View {
             .padding()
         }
         .navigationTitle("极简音频转换器")
+        .navigationBarTitleDisplayMode(.inline)
         .fileSelector(isPresented: $showFilePicker) { url in
             selectedFileURL = url
             showResult = false
