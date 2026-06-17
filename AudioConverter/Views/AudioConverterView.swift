@@ -10,6 +10,8 @@ struct AudioConvertView: View {
     @State private var showResult = false
     @State private var showShareSheet = false
     
+    @State private var audioFileURL: URL?
+    
     @State private var mediaPlayer: AVPlayer?
     
     @State private var audioPlayer: AVPlayer?
@@ -25,7 +27,7 @@ struct AudioConvertView: View {
                 
                 formatSection
                 
-                audioPlayerSection
+                audioPlayerSection(player: audioPlayer)
             }
             .padding()
         }
@@ -186,14 +188,30 @@ struct AudioConvertView: View {
         .cornerRadius(12)
     }
     
-    private var audioPlayerSection: some View {
-        VideoPlayer(player: nil)
-            .frame(height: 60)
-            .cornerRadius(10)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
-            )
+    private func audioPlayerSection(player: AVPlayer?) -> some View {
+        VStack(spacing: 12) {
+            if let player = player {
+                VideoPlayer(player: player)
+                    .frame(height: 60)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                    )
+                    .padding(10)
+            } else {
+                VideoPlayer(player: nil)
+                    .frame(height: 60)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                    )
+                    .padding(10)
+            }
+        }
+        .background(Color.white)
+        .cornerRadius(12)
     }
 
     // MARK: - 已转换文件列表
@@ -235,6 +253,12 @@ struct AudioConvertView: View {
     private func checkConversionComplete() {
         if converter.convertedURL != nil {
             showResult = true
+            
+            audioPlayer?.pause()
+            audioPlayer = nil
+            
+            guard let url = converter.convertedURL else { return }
+            audioPlayer = AVPlayer(url: url)
         } else if converter.isConverting {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 checkConversionComplete()
