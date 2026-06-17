@@ -7,7 +7,7 @@ struct AudioConvertView: View {
     enum ConversionState {
         case initial       // 初始状态 - 未选择文件
         case fileSelected  // 已选择文件
-        case converting    // 转换中
+        case fileConverted    // 已转换文件
     }
     
     @State private var conversionState: ConversionState = .initial
@@ -172,7 +172,7 @@ struct AudioConvertView: View {
             )
         case .fileSelected:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
-        case .converting:
+        case .fileConverted:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
         }
     }
@@ -181,7 +181,7 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return .white
         case .fileSelected: return .accentColor
-        case .converting: return .accentColor
+        case .fileConverted: return .accentColor
         }
     }
     
@@ -193,7 +193,7 @@ struct AudioConvertView: View {
             return AnyShapeStyle(
                 LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing)
             )
-        case .converting:
+        case .fileConverted:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
         }
     }
@@ -202,7 +202,7 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return .accentColor
         case .fileSelected: return .white
-        case .converting: return .accentColor
+        case .fileConverted: return .accentColor
         }
     }
     
@@ -210,7 +210,7 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return true
         case .fileSelected: return false
-        case .converting: return false
+        case .fileConverted: return false
         }
     }
     
@@ -344,7 +344,7 @@ struct AudioConvertView: View {
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
         case .fileSelected:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
-        case .converting:
+        case .fileConverted:
             return AnyShapeStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing))
         }
     }
@@ -353,7 +353,7 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return .accentColor
         case .fileSelected: return .accentColor
-        case .converting: return .white
+        case .fileConverted: return .white
         }
     }
     
@@ -363,7 +363,7 @@ struct AudioConvertView: View {
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
         case .fileSelected:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
-        case .converting:
+        case .fileConverted:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
         }
     }
@@ -372,7 +372,7 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return .accentColor
         case .fileSelected: return .accentColor
-        case .converting: return .accentColor
+        case .fileConverted: return .accentColor
         }
     }
     
@@ -420,7 +420,6 @@ struct AudioConvertView: View {
     // MARK: - 操作
     private func startConversion() {
         guard let url = selectedFileURL else { return }
-        conversionState = .converting
         showResult = false
         converter.convertAudio(from: url, to: selectedFormat)
         
@@ -433,6 +432,8 @@ struct AudioConvertView: View {
     
     private func checkConversionComplete() {
         if converter.convertedURL != nil {
+            conversionState = .fileConverted
+            
             showResult = true
             
             audioPlayer?.pause()
