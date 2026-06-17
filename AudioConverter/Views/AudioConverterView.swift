@@ -1,13 +1,7 @@
 import SwiftUI
 import AVKit
 
-struct AudioConvertView: View {
-    let initialFileURL: URL?
-    
-    init(initialFileURL: URL? = nil) {
-        self.initialFileURL = initialFileURL
-    }
-    
+struct AudioConvertView: View {    
     @StateObject private var converter = AudioConverterService()
     
     @State private var selectedFileURL: URL?
@@ -51,8 +45,7 @@ struct AudioConvertView: View {
             mediaPlayer = AVPlayer(url: url)
         }
         .onAppear {
-            if let url = initialFileURL {
-                selectedFileURL = url
+            if let url = selectedFileURL {
                 showResult = false
                 converter.convertedURL = nil
                 converter.errorMessage = nil
