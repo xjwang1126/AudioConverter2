@@ -44,6 +44,13 @@ struct AudioConvertView: View {
             .padding()
         }
         .background(Color(.systemGroupedBackground))
+        .sheet(isPresented: $showShareSheet) {
+            if let url = converter.convertedURL {
+                ShareSheet(items: [url])
+            } else if let url = selectedFileURL {
+                ShareSheet(items: [url])
+            }
+        }
         .navigationTitle("极简音频转换器")
         .navigationBarTitleDisplayMode(.inline)
         .fileSelector(isPresented: $showFilePicker) { url in
