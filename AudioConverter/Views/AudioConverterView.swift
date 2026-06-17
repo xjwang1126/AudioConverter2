@@ -8,7 +8,6 @@ struct AudioConvertView: View {
         self.initialFileURL = initialFileURL
     }
     
-    @EnvironmentObject private var audioPlayer: AudioPlayer
     @StateObject private var converter = AudioConverterService()
     
     @State private var selectedFileURL: URL?
@@ -75,8 +74,6 @@ struct AudioConvertView: View {
             showResult = false
             converter.convertedURL = nil
             converter.errorMessage = nil
-            // 播放预览
-            audioPlayer.play(url: url)
             
             mediaPlayer = AVPlayer(url: url)
         }
@@ -86,15 +83,12 @@ struct AudioConvertView: View {
                 showResult = false
                 converter.convertedURL = nil
                 converter.errorMessage = nil
-                audioPlayer.play(url: url)
                 
                 // 新增预览播放器
                 mediaPlayer = AVPlayer(url: url)
             }
         }
         .onDisappear {
-            audioPlayer.stop()
-            
             mediaPlayer?.pause()
             mediaPlayer = nil
         }
@@ -409,7 +403,6 @@ struct AudioConvertView: View {
                 .foregroundColor(.green)
             
             AudioFileInfoView(url: url, showPlayButton: true, onPlay: {
-                audioPlayer.play(url: url)
             }, onRemove: nil)
             
             HStack(spacing: 12) {
@@ -479,7 +472,6 @@ struct AudioConvertView: View {
                     
                     ForEach(convertedFiles, id: \.self) { url in
                         AudioFileInfoView(url: url, showPlayButton: true, onPlay: {
-                            audioPlayer.play(url: url)
                         }, onRemove: {
                             try? FileManager.default.removeItem(at: url)
                         })
@@ -574,6 +566,5 @@ struct ShareSheet: UIViewControllerRepresentable {
 #Preview("AudioConvertView") {
     NavigationStack {
         AudioConvertView()
-            .environmentObject(AudioPlayer())
     }
 }
