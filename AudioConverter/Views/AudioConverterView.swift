@@ -26,49 +26,92 @@ struct AudioConvertView: View {
     
     @State private var audioPlayer: AVPlayer?
     
+    // 进度变量 0.46 = 46%
+    @State private var extractProgress: Double = 0.46
+    
     private let availableFormats = AudioConverterService.ConversionFormat.allCases
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 10) {
-                mediaPlayerSection(player: mediaPlayer)
-                
-                controlSection(url: selectedFileURL)
-                
-                formatSection(url: selectedFileURL)
-                
-                audioPlayerSection(player: audioPlayer, url: converter.convertedURL)
-                
-                audioOperationSection(url: converter.convertedURL)
+        ZStack {
+            ScrollView {
+                VStack(spacing: 10) {
+                    mediaPlayerSection(player: mediaPlayer)
+                    
+                    controlSection(url: selectedFileURL)
+                    
+                    formatSection(url: selectedFileURL)
+                    
+                    audioPlayerSection(player: audioPlayer, url: converter.convertedURL)
+                    
+                    audioOperationSection(url: converter.convertedURL)
+                }
+                .padding()
             }
-            .padding()
-        }
-        .background(Color(.systemGroupedBackground))
-        .sheet(isPresented: $showShareSheet) {
-            if let url = converter.convertedURL {
-                ShareSheet(items: [url])
-            } else if let url = selectedFileURL {
-                ShareSheet(items: [url])
+            .background(Color(.systemGroupedBackground))
+            .sheet(isPresented: $showShareSheet) {
+                if let url = converter.convertedURL {
+                    ShareSheet(items: [url])
+                } else if let url = selectedFileURL {
+                    ShareSheet(items: [url])
+                }
             }
-        }
-        .navigationTitle("极简音频转换器")
-        .navigationBarTitleDisplayMode(.inline)
-        .fileSelector(isPresented: $showFilePicker) { url in
-            // 停止并清空旧播放器
-            mediaPlayer?.pause()
-            mediaPlayer = nil
+            .navigationTitle("极简音频转换器")
+            .navigationBarTitleDisplayMode(.inline)
+            .fileSelector(isPresented: $showFilePicker) { url in
+                // 停止并清空旧播放器
+                mediaPlayer?.pause()
+                mediaPlayer = nil
+                
+                conversionState = .fileSelected
+                selectedFileURL = url
+                showResult = false
+                converter.convertedURL = nil
+                converter.errorMessage = nil
+                
+                mediaPlayer = AVPlayer(url: url)
+            }
+            .onAppear {
+            }
+            .onDisappear {
+            }
             
-            conversionState = .fileSelected
-            selectedFileURL = url
-            showResult = false
-            converter.convertedURL = nil
-            converter.errorMessage = nil
+            // ========== 核心环形进度区域 ==========
             
-            mediaPlayer = AVPlayer(url: url)
-        }
-        .onAppear {
-        }
-        .onDisappear {
+            ZStack {
+                // 半透明灰色全屏蒙版
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 12) {
+                    ZStack {
+                        // 环形进度圈
+                        RingProgressView(
+                            progress: extractProgress,
+                            ringWidth: 8,
+                            ringColor: Color.green,
+                            bgRingColor: Color.white
+                        )
+                        .frame(width: 150, height: 150)
+                        
+                        Text("\(Int(extractProgress * 100))%")
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    
+                    // 中间百分比文字
+                    VStack(spacing: 8) {
+                        Text("正在转换音频")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(.top, 10)
+                        
+                        Text("请不要关闭极简音频转换器")
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                }
+            }
+            .zIndex(999)
         }
     }
     
