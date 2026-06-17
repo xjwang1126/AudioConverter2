@@ -1,7 +1,17 @@
 import SwiftUI
 import AVKit
 
-struct AudioConvertView: View {    
+struct AudioConvertView: View {
+    
+    // MARK: - 状态机
+    enum ConversionState {
+        case initial       // 初始状态 - 未选择文件
+        case fileSelected  // 已选择文件
+        case converting    // 转换中
+    }
+    
+    @State private var conversionState: ConversionState = .initial
+    
     @StateObject private var converter = AudioConverterService()
     
     @State private var selectedFileURL: URL?
@@ -41,6 +51,7 @@ struct AudioConvertView: View {
             mediaPlayer?.pause()
             mediaPlayer = nil
             
+            conversionState = .fileSelected
             selectedFileURL = url
             showResult = false
             converter.convertedURL = nil
@@ -108,33 +119,28 @@ struct AudioConvertView: View {
         }
     }
     
-    // MARK: - 控制区域
+    // MARK: - 控制区域（根据状态切换按钮样式）
     private func controlSection(url: URL?) -> some View {
-        // 两个操作按钮横排
         HStack(spacing: 12) {
-            // 选择其他文件
-            Button(action: { showFilePicker = true }) {
+            // 选择文件按钮 - 不同状态不同样式
+            Button(action: {
+                showFilePicker = true
+            }) {
                 HStack(spacing: 6) {
                     Image(systemName: "doc.badge.plus")
-                    Text(url != nil ? "重选文件" : "选择文件")
+                    Text("选择文件")
                 }
                 .font(.subheadline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(url != nil ? AnyShapeStyle(Color.accentColor.opacity(0.1)) :
-                                AnyShapeStyle(LinearGradient(
-                                    colors: [.accentColor, .accentColor.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                ))
-                )
-                .foregroundColor(url != nil ? .accentColor : .white)
+                .background(selectFileBg)
+                .foregroundColor(selectFileFg)
                 .cornerRadius(10)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
             
-            // 开始转换
+            // 转换音频按钮 - 不同状态不同样式
             Button(action: startConversion) {
                 HStack(spacing: 6) {
                     Image(systemName: "arrow.triangle.swap")
@@ -144,23 +150,68 @@ struct AudioConvertView: View {
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(url == nil ? AnyShapeStyle(Color.accentColor.opacity(0.1)) :
-                                AnyShapeStyle(LinearGradient(
-                                    colors: [.accentColor, .accentColor.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                ))
-                )
-                .foregroundColor(url == nil ? .accentColor : .white)
+                .background(convertFileBg)
+                .foregroundColor(convertFileFg)
                 .cornerRadius(10)
             }
-            .disabled(converter.isConverting)
-            .opacity(converter.isConverting ? 0.6 : 1)
+            .disabled(convertFileDisabled)
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
         }
         .background(Color.white)
         .cornerRadius(12)
+    }
+    
+    // MARK: - 状态驱动的按钮属性
+    
+    private var selectFileBg: AnyShapeStyle {
+        switch conversionState {
+        case .initial:
+            return AnyShapeStyle(
+                LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing)
+            )
+        case .fileSelected:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        case .converting:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        }
+    }
+    
+    private var selectFileFg: Color {
+        switch conversionState {
+        case .initial: return .white
+        case .fileSelected: return .accentColor
+        case .converting: return .accentColor
+        }
+    }
+    
+    private var convertFileBg: AnyShapeStyle {
+        switch conversionState {
+        case .initial:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        case .fileSelected:
+            return AnyShapeStyle(
+                LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing)
+            )
+        case .converting:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        }
+    }
+    
+    private var convertFileFg: Color {
+        switch conversionState {
+        case .initial: return .accentColor
+        case .fileSelected: return .white
+        case .converting: return .accentColor
+        }
+    }
+    
+    private var convertFileDisabled: Bool {
+        switch conversionState {
+        case .initial: return true
+        case .fileSelected: return false
+        case .converting: return false
+        }
     }
     
     // MARK: - 格式选择区域
@@ -249,8 +300,8 @@ struct AudioConvertView: View {
     
     private func audioOperationSection(url: URL?) -> some View {
         HStack(spacing: 12) {
-            // 保存到文件App
             if let url = url {
+                // 保存按钮 - 根据状态切换样式
                 Button(action: { saveToFiles(url: url) }) {
                     HStack(spacing: 6) {
                         Image(systemName: "folder.badge.plus")
@@ -259,14 +310,14 @@ struct AudioConvertView: View {
                     .font(.subheadline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-                    .background(Color.accentColor.opacity(0.1))
-                    .foregroundColor(.accentColor)
+                    .background(saveFileBg)
+                    .foregroundColor(saveFileFg)
                     .cornerRadius(10)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 10)
                 
-                // 分享
+                // 分享按钮 - 根据状态切换样式
                 Button(action: { showShareSheet = true }) {
                     HStack(spacing: 6) {
                         Image(systemName: "square.and.arrow.up")
@@ -275,8 +326,8 @@ struct AudioConvertView: View {
                     .font(.subheadline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-                    .background(Color.accentColor.opacity(0.1))
-                    .foregroundColor(.accentColor)
+                    .background(shareFileBg)
+                    .foregroundColor(shareFileFg)
                     .cornerRadius(10)
                 }
                 .padding(.horizontal, 10)
@@ -285,6 +336,44 @@ struct AudioConvertView: View {
         }
         .background(Color.white)
         .cornerRadius(12)
+    }
+    
+    private var saveFileBg: AnyShapeStyle {
+        switch conversionState {
+        case .initial:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        case .fileSelected:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        case .converting:
+            return AnyShapeStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing))
+        }
+    }
+    
+    private var saveFileFg: Color {
+        switch conversionState {
+        case .initial: return .accentColor
+        case .fileSelected: return .accentColor
+        case .converting: return .white
+        }
+    }
+    
+    private var shareFileBg: AnyShapeStyle {
+        switch conversionState {
+        case .initial:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        case .fileSelected:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        case .converting:
+            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+        }
+    }
+    
+    private var shareFileFg: Color {
+        switch conversionState {
+        case .initial: return .accentColor
+        case .fileSelected: return .accentColor
+        case .converting: return .accentColor
+        }
     }
     
     private func fileSize(for url: URL) -> String? {
@@ -331,6 +420,7 @@ struct AudioConvertView: View {
     // MARK: - 操作
     private func startConversion() {
         guard let url = selectedFileURL else { return }
+        conversionState = .converting
         showResult = false
         converter.convertAudio(from: url, to: selectedFormat)
         
