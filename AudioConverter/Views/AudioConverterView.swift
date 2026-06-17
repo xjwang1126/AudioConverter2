@@ -21,7 +21,8 @@ struct AudioConvertView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: 10) {
+                /*
                 // 文件选择区域
                 fileSelectionSection
                 
@@ -47,6 +48,16 @@ struct AudioConvertView: View {
                     // 已转换文件列表
                     convertedFilesSection
                 }
+                */
+                
+                mediaPlayerSection
+                
+                controlSection
+                
+                formatSection
+                
+                audioPlayerSection
+                
             }
             .padding()
         }
@@ -73,6 +84,91 @@ struct AudioConvertView: View {
         .onDisappear {
             audioPlayer.stop()
         }
+    }
+    
+    private var mediaPlayerSection: some View {
+        // 未选择文件 - 显示 AVPlayer 背景（带选择提示）
+        ZStack(alignment: .center) {
+            // AVKit 视频播放器作为背景
+            VideoPlayer(player: nil)
+                .frame(height: 220)
+                .cornerRadius(16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                )
+            
+            // 半透明遮罩 + 选择提示
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.black.opacity(0.3))
+                .frame(height: 220)
+            
+            // 点击选择区域
+            Button(action: { showFilePicker = true }) {
+                VStack(spacing: 10) {
+                    Image(systemName: "play.circle.fill")
+                        .font(.system(size: 44))
+                        .foregroundColor(.white)
+                    Text("点击选择文件")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Text("支持音频和视频格式")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    private var controlSection: some View {
+        // 两个操作按钮横排
+        HStack(spacing: 12) {
+            // 选择其他文件
+            Button(action: { showFilePicker = true }) {
+                HStack(spacing: 6) {
+                    Image(systemName: "doc.badge.plus")
+                    Text("选择文件")
+                }
+                .font(.subheadline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(
+                    LinearGradient(
+                        colors: [.accentColor, .accentColor.opacity(0.8)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 10)
+            
+            // 开始转换
+            Button(action: startConversion) {
+                HStack(spacing: 6) {
+                    Image(systemName: "arrow.triangle.swap")
+                    Text("转换音频")
+                }
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.accentColor.opacity(0.1))
+                .foregroundColor(.accentColor)
+                .cornerRadius(10)
+            }
+            .disabled(converter.isConverting)
+            .opacity(converter.isConverting ? 0.6 : 1)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 10)
+        }
+        .background(Color.white)
+        .cornerRadius(12)
     }
     
     // MARK: - 文件选择区域
@@ -164,6 +260,36 @@ struct AudioConvertView: View {
     }
     
     // MARK: - 格式选择区域
+    private var formatSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("转换格式", systemImage: "arrow.triangle.swap")
+                .font(.callout)
+                .padding(.horizontal,10)
+                .padding(.top, 10)
+            
+            LazyVGrid(columns: [
+                GridItem(.flexible()),
+                GridItem(.flexible()),
+                GridItem(.flexible()),
+                GridItem(.flexible())
+            ], spacing: 10) {
+                ForEach(availableFormats) { format in
+                    FormatCard(
+                        format: format,
+                        isSelected: selectedFormat == format
+                    ) {
+                        selectedFormat = format
+                    }
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.bottom, 10)
+        }
+        .background(Color.white)
+        .cornerRadius(12)
+    }
+    
+    // MARK: - 格式选择区域
     private var formatSelectionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("转换格式", systemImage: "arrow.triangle.swap")
@@ -191,6 +317,16 @@ struct AudioConvertView: View {
         }
         .background(Color.white)
         .cornerRadius(12)
+    }
+    
+    private var audioPlayerSection: some View {
+        VideoPlayer(player: nil)
+            .frame(height: 60)
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+            )
     }
     
     // MARK: - 转换按钮
