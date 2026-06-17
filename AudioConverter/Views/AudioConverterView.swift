@@ -25,7 +25,7 @@ struct AudioConvertView: View {
                 
                 controlSection
                 
-                formatSection
+                formatSection(url: selectedFileURL)
                 
                 audioPlayerSection(player: audioPlayer, url: converter.convertedURL)
                 
@@ -161,31 +161,33 @@ struct AudioConvertView: View {
     }
     
     // MARK: - 格式选择区域
-    private var formatSection: some View {
+    private func formatSection(url: URL?) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("转换格式", systemImage: "arrow.triangle.swap")
-                .font(.callout)
-                .foregroundColor(.secondary)
-                .padding(.horizontal,10)
-                .padding(.top, 10)
-            
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 10) {
-                ForEach(availableFormats) { format in
-                    FormatCard(
-                        format: format,
-                        isSelected: selectedFormat == format
-                    ) {
-                        selectedFormat = format
+            if let url = url {
+                Label("转换格式", systemImage: "arrow.triangle.swap")
+                    .font(.callout)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal,10)
+                    .padding(.top, 10)
+                
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 10) {
+                    ForEach(availableFormats) { format in
+                        FormatCard(
+                            format: format,
+                            isSelected: selectedFormat == format
+                        ) {
+                            selectedFormat = format
+                        }
                     }
                 }
+                .padding(.horizontal, 10)
+                .padding(.bottom, 10)
             }
-            .padding(.horizontal, 10)
-            .padding(.bottom, 10)
         }
         .background(Color.white)
         .cornerRadius(12)
@@ -193,14 +195,14 @@ struct AudioConvertView: View {
     
     private func audioPlayerSection(player: AVPlayer?, url: URL?) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 6) {
-                Label("文件信息", systemImage: "music.note")
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal,10)
-                    .padding(.top, 10)
-                
-                if let url = url {
+            if let url = url {
+                HStack(spacing: 6) {
+                    Label("文件信息", systemImage: "music.note")
+                        .font(.callout)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal,10)
+                        .padding(.top, 10)
+                    
                     // 格式标签
                     Text(url.pathExtension.uppercased())
                         .font(.callout)
@@ -214,28 +216,28 @@ struct AudioConvertView: View {
                             .padding(.top, 10)
                     }
                 }
-            }
-            
-            if let player = player {
-                VideoPlayer(player: player)
-                    .frame(height: 60)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
-                    )
-                    .padding(.horizontal, 10)
-                    .padding(.bottom, 10)
-            } else {
-                VideoPlayer(player: nil)
-                    .frame(height: 60)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
-                    )
-                    .padding(.horizontal, 10)
-                    .padding(.bottom, 10)
+                
+                if let player = player {
+                    VideoPlayer(player: player)
+                        .frame(height: 60)
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                        )
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 10)
+                } else {
+                    VideoPlayer(player: nil)
+                        .frame(height: 60)
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                        )
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 10)
+                }
             }
         }
         .background(Color.white)
