@@ -28,6 +28,8 @@ struct AudioConvertView: View {
                 formatSection
                 
                 audioPlayerSection(player: audioPlayer, url: converter.convertedURL)
+                
+                audioOperationSection(url: converter.convertedURL)
             }
             .padding()
         }
@@ -240,10 +242,62 @@ struct AudioConvertView: View {
         .cornerRadius(12)
     }
     
+    private func audioOperationSection(url: URL?) -> some View {
+        HStack(spacing: 12) {
+            // 保存到文件App
+            if let url = url {
+                Button(action: { saveToFiles(url: url) }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "folder.badge.plus")
+                        Text("保存文件")
+                    }
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.accentColor.opacity(0.1))
+                    .foregroundColor(.accentColor)
+                    .cornerRadius(10)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 10)
+                
+                // 分享
+                Button(action: { showShareSheet = true }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "square.and.arrow.up")
+                        Text("分享文件")
+                    }
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.accentColor.opacity(0.1))
+                    .foregroundColor(.accentColor)
+                    .cornerRadius(10)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 10)
+            }
+        }
+        .background(Color.white)
+        .cornerRadius(12)
+    }
+    
     private func fileSize(for url: URL) -> String? {
         guard let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
               let size = attrs[.size] as? Int64 else { return nil }
         return ByteCountFormatter().string(fromByteCount: size)
+    }
+    
+    private func saveToFiles(url: URL) {
+        let picker = UIDocumentPickerViewController(forExporting: [url], asCopy: true)
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootVC = windowScene.windows.first?.rootViewController else { return }
+        
+        var topVC = rootVC
+        while let presented = topVC.presentedViewController {
+            topVC = presented
+        }
+        topVC.present(picker, animated: true)
     }
 
     // MARK: - 已转换文件列表
