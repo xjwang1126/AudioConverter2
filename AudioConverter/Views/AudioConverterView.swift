@@ -17,6 +17,8 @@ struct AudioConvertView: View {
     @State private var showResult = false
     @State private var showShareSheet = false
     
+    @State private var mediaPlayer: AVPlayer?
+    
     private let availableFormats = AudioConverterService.ConversionFormat.allCases
     
     var body: some View {
@@ -50,7 +52,7 @@ struct AudioConvertView: View {
                 }
                 */
                 
-                mediaPlayerSection
+                mediaPlayerSection(player: mediaPlayer)
                 
                 controlSection
                 
@@ -65,12 +67,18 @@ struct AudioConvertView: View {
         .navigationTitle("极简音频转换器")
         .navigationBarTitleDisplayMode(.inline)
         .fileSelector(isPresented: $showFilePicker) { url in
+            // 停止并清空旧播放器
+            mediaPlayer?.pause()
+            mediaPlayer = nil
+            
             selectedFileURL = url
             showResult = false
             converter.convertedURL = nil
             converter.errorMessage = nil
             // 播放预览
             audioPlayer.play(url: url)
+            
+            mediaPlayer = AVPlayer(url: url)
         }
         .onAppear {
             if let url = initialFileURL {
@@ -79,47 +87,62 @@ struct AudioConvertView: View {
                 converter.convertedURL = nil
                 converter.errorMessage = nil
                 audioPlayer.play(url: url)
+                
+                // 新增预览播放器
+                mediaPlayer = AVPlayer(url: url)
             }
         }
         .onDisappear {
             audioPlayer.stop()
+            
+            mediaPlayer?.pause()
+            mediaPlayer = nil
         }
     }
     
-    private var mediaPlayerSection: some View {
+    private func mediaPlayerSection(player: AVPlayer?) -> some View {
         // 未选择文件 - 显示 AVPlayer 背景（带选择提示）
         ZStack(alignment: .center) {
-            // AVKit 视频播放器作为背景
-            VideoPlayer(player: nil)
-                .frame(height: 220)
-                .cornerRadius(16)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
-                )
-            
-            // 半透明遮罩 + 选择提示
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.black.opacity(0.3))
-                .frame(height: 220)
-            
-            // 点击选择区域
-            Button(action: { showFilePicker = true }) {
-                VStack(spacing: 10) {
-                    Image(systemName: "play.circle.fill")
-                        .font(.system(size: 44))
-                        .foregroundColor(.white)
-                    Text("点击选择文件")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    Text("支持音频和视频格式")
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.8))
+            if let player = player {
+                // AVKit 视频播放器作为背景
+                VideoPlayer(player: player)
+                    .frame(height: 220)
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                    )
+            } else {
+                VideoPlayer(player: nil)
+                    .frame(height: 220)
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1))
+                        
+                // 半透明遮罩 + 选择提示
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.black.opacity(0.3))
+                    .frame(height: 220)
+                
+                // 点击选择区域
+                Button(action: { showFilePicker = true }) {
+                    VStack(spacing: 10) {
+                        Image(systemName: "play.circle.fill")
+                            .font(.system(size: 44))
+                            .foregroundColor(.white)
+                        Text("点击选择文件")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                        Text("支持音频和视频格式")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.8))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 220)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(height: 220)
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
     }
     
