@@ -15,7 +15,6 @@
 		36A0000E /* FilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00026 /* FilePicker.swift */; };
 		36A0000F /* AudioConverterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00035 /* AudioConverterView.swift */; };
 		36A00605 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00606 /* ProfileView.swift */; };
-		36A00607 /* MediaPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00608 /* MediaPlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +28,6 @@
 		36A00035 /* AudioConverterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverterView.swift; sourceTree = "<group>"; };
 		36A00040 /* AudioConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36A00606 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		36A00608 /* MediaPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -66,7 +64,6 @@
 		36A00130 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				36A00608 /* MediaPlayerView.swift */,
 				36A00025 /* AudioConverter.swift */,
 				36A00026 /* FilePicker.swift */,
 			);
@@ -151,7 +148,6 @@
 				36A00002 /* ContentView.swift in Sources */,
 				36A00009 /* AudioConverter.swift in Sources */,
 				36A0000E /* FilePicker.swift in Sources */,
-				36A00607 /* MediaPlayerView.swift in Sources */,
 				36A0000F /* AudioConverterView.swift in Sources */,
 				36A00605 /* ProfileView.swift in Sources */,
 			);

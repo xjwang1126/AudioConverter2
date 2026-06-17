@@ -38,12 +38,6 @@ struct ProfileView: View {
             // 功能列表
             Section("功能") {
                 NavigationLink {
-                    MediaPlayerView()
-                } label: {
-                    Label("媒体播放器", systemImage: "play.circle")
-                }
-                
-                NavigationLink {
                     FormatGuideView()
                 } label: {
                     Label("支持的格式说明", systemImage: "doc.text.magnifyingglass")
