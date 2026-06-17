@@ -27,7 +27,7 @@ struct AudioConvertView: View {
                 
                 formatSection
                 
-                audioPlayerSection(player: audioPlayer)
+                audioPlayerSection(player: audioPlayer, url: converter.convertedURL)
             }
             .padding()
         }
@@ -163,6 +163,7 @@ struct AudioConvertView: View {
         VStack(alignment: .leading, spacing: 12) {
             Label("转换格式", systemImage: "arrow.triangle.swap")
                 .font(.callout)
+                .foregroundColor(.secondary)
                 .padding(.horizontal,10)
                 .padding(.top, 10)
             
@@ -188,8 +189,31 @@ struct AudioConvertView: View {
         .cornerRadius(12)
     }
     
-    private func audioPlayerSection(player: AVPlayer?) -> some View {
-        VStack(spacing: 12) {
+    private func audioPlayerSection(player: AVPlayer?, url: URL?) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Label("文件信息", systemImage: "music.note")
+                    .font(.callout)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal,10)
+                    .padding(.top, 10)
+                
+                if let url = url {
+                    // 格式标签
+                    Text(url.pathExtension.uppercased())
+                        .font(.callout)
+                        .padding(.horizontal, 5)
+                        .padding(.top, 10)
+                    
+                    // 文件大小
+                    if let size = fileSize(for: url) {
+                        Text(size)
+                            .font(.callout)
+                            .padding(.top, 10)
+                    }
+                }
+            }
+            
             if let player = player {
                 VideoPlayer(player: player)
                     .frame(height: 60)
@@ -198,7 +222,8 @@ struct AudioConvertView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
                     )
-                    .padding(10)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 10)
             } else {
                 VideoPlayer(player: nil)
                     .frame(height: 60)
@@ -207,11 +232,18 @@ struct AudioConvertView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
                     )
-                    .padding(10)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 10)
             }
         }
         .background(Color.white)
         .cornerRadius(12)
+    }
+    
+    private func fileSize(for url: URL) -> String? {
+        guard let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
+              let size = attrs[.size] as? Int64 else { return nil }
+        return ByteCountFormatter().string(fromByteCount: size)
     }
 
     // MARK: - 已转换文件列表
