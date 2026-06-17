@@ -191,7 +191,17 @@ struct AudioConvertView: View {
                 LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing)
             )
         case .fileConverted:
-            return AnyShapeStyle(Color.accentColor.opacity(0.1))
+            if let url = converter.convertedURL {
+                if (url.pathExtension.uppercased() == selectedFormat.displayName) {
+                    return AnyShapeStyle(Color.accentColor.opacity(0.1))
+                } else {
+                    return AnyShapeStyle(
+                        LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing)
+                    )
+                }
+            } else {
+                return AnyShapeStyle(Color.accentColor.opacity(0.1))
+            }
         }
     }
     
@@ -199,7 +209,16 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return .accentColor
         case .fileSelected: return .white
-        case .fileConverted: return .accentColor
+        case .fileConverted:
+            if let url = converter.convertedURL {
+                if (url.pathExtension.uppercased() == selectedFormat.displayName) {
+                    return .accentColor
+                } else {
+                    return .white
+                }
+            } else {
+                return .accentColor
+            }
         }
     }
     
@@ -342,7 +361,15 @@ struct AudioConvertView: View {
         case .fileSelected:
             return AnyShapeStyle(Color.accentColor.opacity(0.1))
         case .fileConverted:
-            return AnyShapeStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing))
+            if let url = converter.convertedURL {
+                if (url.pathExtension.uppercased() == selectedFormat.displayName) {
+                    return AnyShapeStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing))
+                } else {
+                    return AnyShapeStyle(Color.accentColor.opacity(0.1))
+                }
+            } else {
+                return AnyShapeStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8)], startPoint: .leading, endPoint: .trailing))
+            }
         }
     }
     
@@ -350,7 +377,16 @@ struct AudioConvertView: View {
         switch conversionState {
         case .initial: return .accentColor
         case .fileSelected: return .accentColor
-        case .fileConverted: return .white
+        case .fileConverted:
+            if let url = converter.convertedURL {
+                if (url.pathExtension.uppercased() == selectedFormat.displayName) {
+                    return .white
+                } else {
+                    return .accentColor
+                }
+            } else {
+                return .white
+            }
         }
     }
     
