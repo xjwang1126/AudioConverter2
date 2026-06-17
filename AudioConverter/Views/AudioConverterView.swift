@@ -23,7 +23,7 @@ struct AudioConvertView: View {
             VStack(spacing: 10) {
                 mediaPlayerSection(player: mediaPlayer)
                 
-                controlSection
+                controlSection(url: selectedFileURL)
                 
                 formatSection(url: selectedFileURL)
                 
@@ -99,9 +99,6 @@ struct AudioConvertView: View {
                         Text("点击选择文件")
                             .font(.headline)
                             .foregroundColor(.white)
-                        Text("支持音频和视频格式")
-                            .font(.caption)
-                            .foregroundColor(.white.opacity(0.8))
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 220)
@@ -112,26 +109,26 @@ struct AudioConvertView: View {
     }
     
     // MARK: - 控制区域
-    private var controlSection: some View {
+    private func controlSection(url: URL?) -> some View {
         // 两个操作按钮横排
         HStack(spacing: 12) {
             // 选择其他文件
             Button(action: { showFilePicker = true }) {
                 HStack(spacing: 6) {
                     Image(systemName: "doc.badge.plus")
-                    Text("选择文件")
+                    Text(url != nil ? "重选文件" : "选择文件")
                 }
                 .font(.subheadline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(
-                    LinearGradient(
-                        colors: [.accentColor, .accentColor.opacity(0.8)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+                .background(url != nil ? AnyShapeStyle(Color.accentColor.opacity(0.1)) :
+                                AnyShapeStyle(LinearGradient(
+                                    colors: [.accentColor, .accentColor.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                ))
                 )
-                .foregroundColor(.white)
+                .foregroundColor(url != nil ? .accentColor : .white)
                 .cornerRadius(10)
             }
             .padding(.horizontal, 10)
@@ -147,8 +144,14 @@ struct AudioConvertView: View {
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.accentColor.opacity(0.1))
-                .foregroundColor(.accentColor)
+                .background(url == nil ? AnyShapeStyle(Color.accentColor.opacity(0.1)) :
+                                AnyShapeStyle(LinearGradient(
+                                    colors: [.accentColor, .accentColor.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                ))
+                )
+                .foregroundColor(url == nil ? .accentColor : .white)
                 .cornerRadius(10)
             }
             .disabled(converter.isConverting)
