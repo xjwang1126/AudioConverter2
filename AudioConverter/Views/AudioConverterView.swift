@@ -68,10 +68,6 @@ struct AudioConvertView: View {
         }
         .onAppear {
             if let url = selectedFileURL {
-                showResult = false
-                converter.convertedURL = nil
-                converter.errorMessage = nil
-                
                 // 新增预览播放器
                 mediaPlayer = AVPlayer(url: url)
             }
