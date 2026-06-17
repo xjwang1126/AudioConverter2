@@ -29,6 +29,8 @@ struct AudioConvertView: View {
     // 进度变量 0.46 = 46%
     @State private var extractProgress: Double = 0.46
     
+    @State private var showProgressOverlay = false
+    
     private let availableFormats = AudioConverterService.ConversionFormat.allCases
     
     var body: some View {
@@ -76,42 +78,54 @@ struct AudioConvertView: View {
             }
             
             // ========== 核心环形进度区域 ==========
-            
-            ZStack {
-                // 半透明灰色全屏蒙版
-                Color.black.opacity(0.5)
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 12) {
-                    ZStack {
-                        // 环形进度圈
-                        RingProgressView(
-                            progress: extractProgress,
-                            ringWidth: 8,
-                            ringColor: Color.green,
-                            bgRingColor: Color.white
-                        )
-                        .frame(width: 150, height: 150)
-                        
-                        Text("\(Int(extractProgress * 100))%")
-                            .font(.system(size: 30, weight: .bold))
-                            .foregroundColor(.white)
-                    }
+            if showProgressOverlay {
+                ZStack {
+                    // 半透明灰色全屏蒙版
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
                     
-                    // 中间百分比文字
-                    VStack(spacing: 8) {
-                        Text("正在转换音频")
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .padding(.top, 10)
+                    VStack(spacing: 12) {
+                        ZStack {
+                            // 环形进度圈
+                            RingProgressView(
+                                progress: extractProgress,
+                                ringWidth: 8,
+                                ringColor: Color.green,
+                                bgRingColor: Color.white
+                            )
+                            .frame(width: 150, height: 150)
+                            
+                            Text("\(Int(extractProgress * 100))%")
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(.white)
+                        }
                         
-                        Text("请不要关闭极简音频转换器")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.7))
+                        // 中间百分比文字
+                        VStack(spacing: 8) {
+                            Text("正在转换音频")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .padding(.top, 10)
+                            
+                            Text("请不要关闭极简音频转换器")
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                        
+                        // 【新增】取消按钮，放在VStack最底部
+                        Button(action: {
+                            // 点击关闭弹窗
+                            showProgressOverlay = false
+                        }) {
+                            Text("取消")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .padding(.top, 100)
+                        }
                     }
                 }
+                .zIndex(999)
             }
-            .zIndex(999)
         }
     }
     
@@ -495,6 +509,8 @@ struct AudioConvertView: View {
     
     // MARK: - 操作
     private func startConversion() {
+        showProgressOverlay = true;
+        
         guard let url = selectedFileURL else { return }
         showResult = false
         converter.convertAudio(from: url, to: selectedFormat)
@@ -517,6 +533,8 @@ struct AudioConvertView: View {
             
             guard let url = converter.convertedURL else { return }
             audioPlayer = AVPlayer(url: url)
+            
+            showProgressOverlay = false;
         } else if converter.isConverting {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 checkConversionComplete()
