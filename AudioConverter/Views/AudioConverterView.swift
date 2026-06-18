@@ -77,56 +77,59 @@ struct AudioConvertView: View {
             .onDisappear {
             }
             
-            // ========== 核心环形进度区域 ==========
+            progressSection
+        }
+    }
+    
+    private var progressSection: some View {
+        // ========== 核心环形进度区域 ==========
+        ZStack {
             if showProgressOverlay {
-                ZStack {
-                    // 半透明灰色全屏蒙版
-                    Color.black.opacity(0.5)
-                        .ignoresSafeArea()
+                // 半透明灰色全屏蒙版
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 12) {
+                    ZStack {
+                        // 环形进度圈
+                        RingProgressView(
+                            progress: extractProgress,
+                            ringWidth: 8,
+                            ringColor: Color.green,
+                            bgRingColor: Color.white
+                        )
+                        .frame(width: 150, height: 150)
+                        
+                        Text("\(Int(extractProgress * 100))%")
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundColor(.white)
+                    }
                     
-                    VStack(spacing: 12) {
-                        ZStack {
-                            // 环形进度圈
-                            RingProgressView(
-                                progress: extractProgress,
-                                ringWidth: 8,
-                                ringColor: Color.green,
-                                bgRingColor: Color.white
-                            )
-                            .frame(width: 150, height: 150)
-                            
-                            Text("\(Int(extractProgress * 100))%")
-                                .font(.system(size: 30, weight: .bold))
-                                .foregroundColor(.white)
-                        }
+                    // 中间百分比文字
+                    VStack(spacing: 8) {
+                        Text("正在转换音频")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(.top, 10)
                         
-                        // 中间百分比文字
-                        VStack(spacing: 8) {
-                            Text("正在转换音频")
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .padding(.top, 10)
-                            
-                            Text("请不要关闭极简音频转换器")
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.7))
-                        }
-                        
-                        // 【新增】取消按钮，放在VStack最底部
-                        Button(action: {
-                            // 点击关闭弹窗
-                            showProgressOverlay = false
-                        }) {
-                            Text("取消")
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .padding(.top, 100)
-                        }
+                        Text("请不要关闭极简音频转换器")
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                    
+                    // 【新增】取消按钮，放在VStack最底部
+                    Button(action: {
+                        // 点击关闭弹窗
+                        showProgressOverlay = false
+                    }) {
+                        Text("取消")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(.top, 100)
                     }
                 }
-                .zIndex(999)
             }
-        }
+        }.zIndex(999)
     }
     
     // MARK: - 媒体播放器区域
