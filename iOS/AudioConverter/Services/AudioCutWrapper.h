@@ -22,22 +22,14 @@ typedef void (^AudioCutCompletionBlock)(BOOL success, NSString * _Nullable outpu
 /// - Parameters:
 ///   - inputPath: 输入音频文件路径
 ///   - outputPath: 输出音频文件路径
-///   - startTimeMs: 开始时间（毫秒），0 表示从开头
-///   - endTimeMs: 结束时间（毫秒），0 表示到结尾
 ///   - format: 输出格式，如 "mp3", "m4a", "aac", "wav"
 /// - Returns: 成功返回 YES，失败返回 NO
 + (BOOL)convertAudio:(NSString *)inputPath
-          outputPath:(NSString *)outputPath
-         startTimeMs:(int64_t)startTimeMs
-           endTimeMs:(int64_t)endTimeMs
-              format:(NSString *)format;
+          outputPath:(NSString *)outputPath;
 
 /// 异步音频转换
 + (void)convertAudioAsync:(NSString *)inputPath
                outputPath:(NSString *)outputPath
-              startTimeMs:(int64_t)startTimeMs
-                endTimeMs:(int64_t)endTimeMs
-                   format:(NSString *)format
                  progress:(AudioCutProgressBlock _Nullable)progress
                completion:(AudioCutCompletionBlock)completion;
 

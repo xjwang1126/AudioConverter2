@@ -530,9 +530,6 @@ struct AudioConvertView: View {
         AudioCutWrapper.convertAudioAsync(
             url.path,
             outputPath: outputURL.path,
-            startTimeMs: 0,
-            endTimeMs: 0,
-            format: selectedFormat.rawValue,
             progress: { progress in
                 DispatchQueue.main.async {
                     self.extractProgress = Double(progress)

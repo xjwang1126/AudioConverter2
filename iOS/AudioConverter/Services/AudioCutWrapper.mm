@@ -20,9 +20,6 @@ static AudioUtil *g_audioUtil = nullptr;
 
 + (BOOL)convertAudio:(NSString *)inputPath
           outputPath:(NSString *)outputPath
-         startTimeMs:(int64_t)startTimeMs
-           endTimeMs:(int64_t)endTimeMs
-              format:(NSString *)format
 {
     if (!inputPath || !outputPath) {
         return NO;
@@ -30,21 +27,6 @@ static AudioUtil *g_audioUtil = nullptr;
     
     // 映射格式字符串到 AudioFormat
     AudioFormat audioFormat;
-    /*
-    if ([format isEqualToString:@"mp3"]) {
-        audioFormat = AudioFormat::MP3;
-    } else if ([format isEqualToString:@"aac"]) {
-        audioFormat = AudioFormat::AAC;
-    } else if ([format isEqualToString:@"m4a"]) {
-        audioFormat = AudioFormat::M4A;
-    } else if ([format isEqualToString:@"wav"]) {
-        audioFormat = AudioFormat::WAV;
-    } else if ([format isEqualToString:@"flac"]) {
-        audioFormat = AudioFormat::FLAC;
-    } else {
-        audioFormat = AudioFormat::M4A; // 默认
-    }
-     */
     
     @autoreleasepool {
         AudioUtil util;
@@ -53,8 +35,8 @@ static AudioUtil *g_audioUtil = nullptr;
         BOOL success = util.convert(
             [inputPath UTF8String],
             [outputPath UTF8String],
-            startTimeMs * 1000,  // 转为微秒
-            endTimeMs * 1000,
+            -1,
+            -1,
             audioFormat,
             nullptr
         );
@@ -66,18 +48,12 @@ static AudioUtil *g_audioUtil = nullptr;
 
 + (void)convertAudioAsync:(NSString *)inputPath
                outputPath:(NSString *)outputPath
-              startTimeMs:(int64_t)startTimeMs
-                endTimeMs:(int64_t)endTimeMs
-                   format:(NSString *)format
                  progress:(AudioCutProgressBlock _Nullable)progress
                completion:(AudioCutCompletionBlock)completion
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         BOOL success = [self convertAudio:inputPath
-                               outputPath:outputPath
-                              startTimeMs:startTimeMs
-                                endTimeMs:endTimeMs
-                                   format:format];
+                               outputPath:outputPath];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (success) {
