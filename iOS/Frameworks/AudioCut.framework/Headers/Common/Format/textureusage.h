@@ -1,0 +1,18 @@
+#ifndef TEXTUREUSAGE_H
+#define TEXTUREUSAGE_H
+
+namespace MediaLibrary {
+
+enum TextureUsage {
+    TEXTURE_USAGE_NONE = 0x0000,
+
+    TEXTURE_USAGE_READ = 0x0001,
+
+    TEXTURE_USAGE_WRITE = 0x0002,
+
+    TEXTURE_USAGE_RENDER_TARGET = 0x0004,
+};
+
+}
+
+#endif // TEXTUREUSAGE_H

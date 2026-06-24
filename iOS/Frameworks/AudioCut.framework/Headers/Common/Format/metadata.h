@@ -1,0 +1,26 @@
+#ifndef METADATA_H
+#define METADATA_H
+
+namespace MediaLibrary {
+
+enum MetadataType {
+    METADATA_NONE_TYPE = 0,
+
+    METADATA_TITLE_TYPE,
+
+    METADATA_ARTIST_TYPE,
+
+    METADATA_ALBUM_TYPE,
+
+    METADATA_COMMENT_TYPE,
+
+    METADATA_DATE_TYPE,
+
+    METADATA_TRACK_TYPE,
+
+    METADATA_GENRE_TYPE,
+};
+
+}
+
+#endif // METADATA_H

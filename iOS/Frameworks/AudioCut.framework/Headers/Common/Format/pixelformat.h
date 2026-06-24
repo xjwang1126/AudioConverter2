@@ -1,0 +1,24 @@
+#ifndef PIXELFORMAT_H
+#define PIXELFORMAT_H
+
+namespace MediaLibrary {
+
+enum PixelFormat {
+    PIXEL_FORMAT_INVALID = 0,
+
+    PIXEL_FORMAT_RGBA,
+
+    PIXEL_FORMAT_BGRA,
+
+    PIXEL_FORMAT_ALPHA,
+
+    PIXEL_FORMAT_RGB,
+
+    PIXEL_FORMAT_LUMINANCE,
+
+    PIXEL_FORMAT_YUVY,
+};
+
+}
+
+#endif // PIXELFORMAT_H

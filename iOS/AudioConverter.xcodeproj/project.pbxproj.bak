@@ -1,0 +1,286 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		36A00001 /* AudioConverterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00011 /* AudioConverterApp.swift */; };
+		36A00002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00012 /* ContentView.swift */; };
+		36A00003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36A00013 /* Assets.xcassets */; };
+		36A00004 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36A00014 /* Preview Assets.xcassets */; };
+		36A00009 /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00025 /* AudioConverter.swift */; };
+		36A0000E /* FilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00026 /* FilePicker.swift */; };
+		36A0000F /* AudioConverterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00035 /* AudioConverterView.swift */; };
+		36A00605 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A00606 /* ProfileView.swift */; };
+		D08639632FE34FA4007E6747 /* RingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08639622FE34FA4007E6747 /* RingProgressView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		36A00011 /* AudioConverterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverterApp.swift; sourceTree = "<group>"; };
+		36A00012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		36A00013 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		36A00014 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		36A00015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		36A00025 /* AudioConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverter.swift; sourceTree = "<group>"; };
+		36A00026 /* FilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePicker.swift; sourceTree = "<group>"; };
+		36A00035 /* AudioConverterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverterView.swift; sourceTree = "<group>"; };
+		36A00040 /* AudioConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		36A00606 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		D08639622FE34FA4007E6747 /* RingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingProgressView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		36A00100 = {
+			isa = PBXGroup;
+			children = (
+				36A00110 /* AudioConverter */,
+				36A00120 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		36A00110 /* AudioConverter */ = {
+			isa = PBXGroup;
+			children = (
+				36A00011 /* AudioConverterApp.swift */,
+				36A00012 /* ContentView.swift */,
+				36A00130 /* Services */,
+				36A00140 /* Views */,
+				36A00013 /* Assets.xcassets */,
+				36A00014 /* Preview Assets.xcassets */,
+				36A00015 /* Info.plist */,
+			);
+			path = AudioConverter;
+			sourceTree = "<group>";
+		};
+		36A00120 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36A00040 /* AudioConverter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		36A00130 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				36A00025 /* AudioConverter.swift */,
+				36A00026 /* FilePicker.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		36A00140 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D08639622FE34FA4007E6747 /* RingProgressView.swift */,
+				36A00035 /* AudioConverterView.swift */,
+				36A00606 /* ProfileView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		36A00200 /* AudioConverter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36A00400 /* Build configuration list for PBXNativeTarget "AudioConverter" */;
+			buildPhases = (
+				36A00310 /* Sources */,
+				36A00320 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AudioConverter;
+			productName = AudioConverter;
+			productReference = 36A00040 /* AudioConverter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		36A00500 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+			};
+			buildConfigurationList = 36A00410 /* Build configuration list for PBXProject "AudioConverter" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				"zh-Hans",
+				Base,
+			);
+			mainGroup = 36A00100;
+			productRefGroup = 36A00120 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				36A00200 /* AudioConverter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		36A00320 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36A00003 /* Assets.xcassets in Resources */,
+				36A00004 /* Preview Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		36A00310 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36A00001 /* AudioConverterApp.swift in Sources */,
+				36A00002 /* ContentView.swift in Sources */,
+				D08639632FE34FA4007E6747 /* RingProgressView.swift in Sources */,
+				36A00009 /* AudioConverter.swift in Sources */,
+				36A0000E /* FilePicker.swift in Sources */,
+				36A0000F /* AudioConverterView.swift in Sources */,
+				36A00605 /* ProfileView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		36A00601 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 98KZ57U4C4;
+				INFOPLIST_FILE = AudioConverter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AudioConverter;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.audiotool.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		36A00602 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 98KZ57U4C4;
+				INFOPLIST_FILE = AudioConverter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AudioConverter;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.audiotool.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		36A00603 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		36A00604 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		36A00400 /* Build configuration list for PBXNativeTarget "AudioConverter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36A00601 /* Debug */,
+				36A00602 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36A00410 /* Build configuration list for PBXProject "AudioConverter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36A00603 /* Debug */,
+				36A00604 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 36A00500 /* Project object */;
+}
