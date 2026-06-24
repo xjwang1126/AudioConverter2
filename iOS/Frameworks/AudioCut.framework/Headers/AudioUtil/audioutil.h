@@ -22,6 +22,7 @@ class AudioUtil
 {
 public:
     AudioUtil();
+    ~AudioUtil();
 
     void setQuietLog();
 

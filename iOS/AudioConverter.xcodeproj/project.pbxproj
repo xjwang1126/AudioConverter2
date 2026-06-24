@@ -18,6 +18,9 @@
 		D079D1222FEBF363001A30D0 /* AudioCut.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D079D11C2FEBF2FE001A30D0 /* AudioCut.framework */; };
 		D079D1232FEBF363001A30D0 /* AudioCut.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D079D11C2FEBF2FE001A30D0 /* AudioCut.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D079D1272FEBF71B001A30D0 /* AudioCutWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = D079D1262FEBF71B001A30D0 /* AudioCutWrapper.mm */; };
+		D079D12A2FEC1441001A30D0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D079D1292FEC1441001A30D0 /* libz.tbd */; };
+		D079D12C2FEC1459001A30D0 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D079D12B2FEC1459001A30D0 /* libbz2.tbd */; };
+		D079D12E2FEC1464001A30D0 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D079D12D2FEC1464001A30D0 /* libiconv.tbd */; };
 		D08639632FE34FA4007E6747 /* RingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08639622FE34FA4007E6747 /* RingProgressView.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +53,9 @@
 		D079D1252FEBF71A001A30D0 /* AudioCutWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioCutWrapper.h; sourceTree = "<group>"; };
 		D079D1262FEBF71B001A30D0 /* AudioCutWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioCutWrapper.mm; sourceTree = "<group>"; };
 		D079D1282FEBF888001A30D0 /* AudioConverter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioConverter-Bridging-Header.h"; sourceTree = "<group>"; };
+		D079D1292FEC1441001A30D0 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		D079D12B2FEC1459001A30D0 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		D079D12D2FEC1464001A30D0 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		D08639622FE34FA4007E6747 /* RingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingProgressView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,6 +64,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D079D12E2FEC1464001A30D0 /* libiconv.tbd in Frameworks */,
+				D079D12C2FEC1459001A30D0 /* libbz2.tbd in Frameworks */,
+				D079D12A2FEC1441001A30D0 /* libz.tbd in Frameworks */,
 				D079D1222FEBF363001A30D0 /* AudioCut.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -121,6 +130,9 @@
 		D079D11B2FEBF2FE001A30D0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D079D12D2FEC1464001A30D0 /* libiconv.tbd */,
+				D079D12B2FEC1459001A30D0 /* libbz2.tbd */,
+				D079D1292FEC1441001A30D0 /* libz.tbd */,
 				D079D11C2FEBF2FE001A30D0 /* AudioCut.framework */,
 			);
 			name = Frameworks;
