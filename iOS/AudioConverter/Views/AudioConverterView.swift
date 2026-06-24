@@ -512,37 +512,49 @@ struct AudioConvertView: View {
     
     // MARK: - 操作
     private func startConversion() {
-        showProgressOverlay = true;
+        showProgressOverlay = true
         
         guard let url = selectedFileURL else { return }
         showResult = false
-        converter.convertAudio(from: url, to: selectedFormat)
+        extractProgress = 0
         
-        // 监听转换完成
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            // 通过 publisher 方式监听
-            checkConversionComplete()
-        }
-    }
-    
-    private func checkConversionComplete() {
-        if converter.convertedURL != nil {
-            conversionState = .fileConverted
-            
-            showResult = true
-            
-            audioPlayer?.pause()
-            audioPlayer = nil
-            
-            guard let url = converter.convertedURL else { return }
-            audioPlayer = AVPlayer(url: url)
-            
-            showProgressOverlay = false;
-        } else if converter.isConverting {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                checkConversionComplete()
+        // 生成输出路径
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd_HHmmss"
+        let dateStr = dateFormatter.string(from: Date())
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let outputFileName = "converted_\(dateStr).\(selectedFormat.rawValue)"
+        let outputURL = documentsPath.appendingPathComponent(outputFileName)
+        
+        // 用 AudioCutWrapper 异步转换 (基于 ffmpeg，支持更多格式)
+        AudioCutWrapper.convertAudioAsync(
+            url.path,
+            outputPath: outputURL.path,
+            startTimeMs: 0,
+            endTimeMs: 0,
+            format: selectedFormat.rawValue,
+            progress: { progress in
+                DispatchQueue.main.async {
+                    self.extractProgress = Double(progress)
+                }
+            },
+            completion: { success, path, error in
+                DispatchQueue.main.async {
+                    if success, let path = path {
+                        self.converter.convertedURL = URL(fileURLWithPath: path)
+                        self.conversionState = .fileConverted
+                        self.showResult = true
+                        
+                        self.audioPlayer?.pause()
+                        self.audioPlayer = nil
+                        self.audioPlayer = AVPlayer(url: URL(fileURLWithPath: path))
+                    } else {
+                        self.converter.errorMessage = error ?? "转换失败"
+                    }
+                    self.showProgressOverlay = false
+                }
             }
-        }
+        )
     }
     
     private func loadConvertedFiles() -> [URL]? {
